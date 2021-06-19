@@ -54,7 +54,7 @@ RSpec.describe GraphQL::Preload do
     include_examples "test suite"
   end
 
-  context "legacy define-based GraphQL schema" do
+  xit "legacy define-based GraphQL schema" do
     next if TESTING_GRAPHQL_RUBY_INTERPRETER # No interpreter runtime these days
 
     let(:schema) { Legacy::PreloadSchema }

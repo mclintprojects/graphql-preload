@@ -1,30 +1,21 @@
 module GraphQL
   module Preload
-    # Provides an instrument for the GraphQL::Field :preload definition
-    class Instrument
-      def instrument(_type, field)
-        metadata = merged_metadata(field)
-        return field if metadata.fetch(:preload, nil).nil?
+    # Provides an extension for the GraphQL::Field :preload definition
+    class Extension < GraphQL::Schema::FieldExtension
+      def resolve(object:, arguments:, context:)
+        metadata = field.metadata
+        return yield(object, arguments, context) if metadata.nil? || !object
 
-        old_resolver = field.resolve_proc
-        new_resolver = ->(obj, args, ctx) do
-          return old_resolver.call(obj, args, ctx) unless obj
-
-          if metadata[:preload_scope]
-            scope = metadata[:preload_scope].call(args, ctx)
-          end
-
-          is_graphql_object = obj.is_a?(GraphQL::Schema::Object)
-          respond_to_object = obj.respond_to?(:object)
-          record = is_graphql_object && respond_to_object ? obj.object : obj
-
-          preload(record, metadata[:preload], scope).then do
-            old_resolver.call(obj, args, ctx)
-          end
+        if metadata[:preload_scope]
+          scope = metadata[:preload_scope].call(arguments, context)
         end
 
-        field.redefine do
-          resolve(new_resolver)
+        is_graphql_object = object.is_a?(GraphQL::Schema::Object)
+        respond_to_object = object.respond_to?(:object)
+        record = is_graphql_object && respond_to_object ? object.object : object
+
+        preload(record, metadata[:preload], scope).then do
+          yield(object, arguments, context)
         end
       end
 
@@ -82,17 +73,6 @@ module GraphQL
         loader.scope = scope
         loader.load(record)
       end
-
-      private def merged_metadata(field)
-        type_class = field.metadata.fetch(:type_class, nil)
-
-        if type_class.nil? || !type_class.respond_to?(:to_graphql)
-          field.metadata
-        else
-          field.metadata.merge(type_class.to_graphql.metadata)
-        end
-      end
-
     end
   end
 end

@@ -63,8 +63,6 @@ module Legacy
   PreloadSchema = GraphQL::Schema.define do
     use GraphQL::Batch
 
-    enable_preloading
-
     query QueryType
   end
 end
