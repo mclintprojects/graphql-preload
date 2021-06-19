@@ -24,13 +24,11 @@ Or install it yourself as:
 
 ## Usage
 
-First, enable preloading in your `GraphQL::Schema`:
+Add `GraphQL::Batch` to your schema
 
 ```ruby
 class PreloadSchema < GraphQL::Schema
   use GraphQL::Batch
-
-  enable_preloading
 
   query QueryType
 end
