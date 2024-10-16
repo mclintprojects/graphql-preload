@@ -35,15 +35,9 @@ module GraphQL
       end
 
       private def preload_association(records)
-        preloader = ActiveRecord::Associations::Preloader.new.preload(records, association, preload_scope).first
+        preloader = ActiveRecord::Associations::Preloader.new(records: records, associations: association, scope: preload_scope).call.first
         return unless preload_scope
         return if Gem::Version.new(ActiveRecord::VERSION::STRING) < Gem::Version.new("6.0.0")
-
-        if preloader.is_a?(::ActiveRecord::Associations::Preloader::AlreadyLoaded)
-          raise ArgumentError,
-              "Preloading association twice with scopes is not possible. " \
-              "To resolve this problem add a scoped association (e.g., `has_many :records, -> { scope_name }, ...`) to the model"
-        end
 
         # this commit changes the way preloader works with scopes
         # https://github.com/rails/rails/commit/2847653869ffc1ff5139c46e520c72e26618c199#diff-3bba5f66eb1ed62bd5700872fcd6c632
@@ -55,17 +49,17 @@ module GraphQL
       private def preload_scope
         return nil unless scope
         reflection = model.reflect_on_association(association)
-        raise ArgumentError, 'Cannot specify preload_scope for polymorphic associations' if reflection.polymorphic?
+        raise ArgumentError, "Cannot specify preload_scope for polymorphic associations" if reflection.polymorphic?
         scope if scope.try(:klass) == reflection.klass
       end
 
       private def validate_association
         unless association.is_a?(Symbol)
-          raise ArgumentError, 'Association must be a Symbol object'
+          raise ArgumentError, "Association must be a Symbol object"
         end
 
         unless model < ActiveRecord::Base
-          raise ArgumentError, 'Model must be an ActiveRecord::Base descendant'
+          raise ArgumentError, "Model must be an ActiveRecord::Base descendant"
         end
 
         return if model.reflect_on_association(association)

@@ -19,7 +19,7 @@ RSpec.describe GraphQL::Preload do
     context "with associations" do
       let(:query_string) do
         <<~QRAPHQL
-        query { posts { title comments { text } } }
+          query { posts { title comments { text } } }
         QRAPHQL
       end
 
@@ -35,7 +35,7 @@ RSpec.describe GraphQL::Preload do
     context "with associations with custom scopes" do
       let(:query_string) do
         <<~QRAPHQL
-        query { users { name posts { title } } }
+          query { users { name posts { title } } }
         QRAPHQL
       end
 
@@ -50,14 +50,6 @@ RSpec.describe GraphQL::Preload do
 
   context "modern class-based GraphQL schema" do
     let(:schema) { PreloadSchema }
-
-    include_examples "test suite"
-  end
-
-  xit "legacy define-based GraphQL schema" do
-    next if TESTING_GRAPHQL_RUBY_INTERPRETER # No interpreter runtime these days
-
-    let(:schema) { Legacy::PreloadSchema }
 
     include_examples "test suite"
   end
