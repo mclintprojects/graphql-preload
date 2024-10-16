@@ -1,7 +1,4 @@
 #!/usr/bin/env ruby
 
-require 'bundler/setup'
-require 'graphql/preload'
-require 'pry'
-
-Pry.start
+require "bundler/setup"
+require "graphql/preload"
