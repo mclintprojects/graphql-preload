@@ -1,21 +1,13 @@
-require 'graphql'
-require 'graphql/batch'
-require 'promise.rb'
-
-GraphQL::Field.accepts_definitions(
-  preload: ->(type, *args) do
-    type.metadata[:preload] ||= []
-    type.metadata[:preload].concat(args)
-  end,
-  preload_scope: ->(type, arg) { type.metadata[:preload_scope] = arg }
-)
+require "graphql"
+require "graphql/batch"
+require "promise.rb"
 
 module GraphQL
   # Provides a GraphQL::Field definition to preload ActiveRecord::Associations
   module Preload
-    autoload :Extension, 'graphql/preload/extension'
-    autoload :Loader, 'graphql/preload/loader'
-    autoload :VERSION, 'graphql/preload/version'
+    autoload :Extension, "graphql/preload/extension"
+    autoload :Loader, "graphql/preload/loader"
+    autoload :VERSION, "graphql/preload/version"
 
     module SchemaMethods
       def enable_preloading
@@ -24,7 +16,7 @@ module GraphQL
 
     module FieldMetadata
       attr_reader :metadata
-      
+
       def initialize(*args, preload: nil, preload_scope: nil, **kwargs, &block)
         super(*args, **kwargs, &block)
         extension(Extension)
