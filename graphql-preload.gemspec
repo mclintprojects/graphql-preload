@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_runtime_dependency "activerecord", ">= 7.0"
-  spec.add_runtime_dependency "graphql", "2.3.18"
+  spec.add_runtime_dependency "graphql", ">= 2.3.21"
   spec.add_runtime_dependency "graphql-batch", "~> 0.6"
   spec.add_runtime_dependency "promise.rb", "~> 0.7"
 
