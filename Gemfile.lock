@@ -3,7 +3,7 @@ PATH
   specs:
     graphql-preload (2.2.0)
       activerecord (>= 7.0)
-      graphql (= 2.3.18)
+      graphql (>= 2.3.21)
       graphql-batch (~> 0.6)
       promise.rb (~> 0.7)
 
